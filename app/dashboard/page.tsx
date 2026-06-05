@@ -264,26 +264,6 @@ export default function DashboardPage() {
     return months
   }, [expenses])
 
-  const renderMonthlyLabel = (props: any) => {
-    const { x, y, width, height, value } = props
-    const w = width ?? 0
-    const h = height ?? 0
-    const cx = (x ?? 0) + w / 2
-    const cy = (y ?? 0) + h / 2
-    return (
-      <text
-        x={cx}
-        y={cy}
-        transform={`rotate(-90 ${cx} ${cy})`}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        style={{ fontSize: 10, fontWeight: 700, fill: resolvedTheme === "dark" ? "#111111" : "white" }}
-      >
-        {formatCurrency(Number(value))}
-      </text>
-    )
-  }
-
   const chartData = useMemo(() => {
     const range = getDateRange(period)
     const initial = range.map((date) => {
@@ -463,21 +443,24 @@ export default function DashboardPage() {
                     </Bar>
                   </BarChart>
                 ) : (
-                  <BarChart data={monthlyBarData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barCategoryGap={8}>
-                    <XAxis
-                      dataKey="monthLabel"
-                      axisLine={false}
-                      tickLine={false}
-                      interval={0}
-                      height={56}
-                      tick={{ fontSize: 11, fill: "#9ca3af" }}
-                    />
-                    <Bar dataKey="total" radius={[8, 8, 0, 0]} barSize={32}>
-                      <LabelList dataKey="total" content={renderMonthlyLabel} />
+                  <BarChart data={monthlyBarData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barCategoryGap={6}>
+                    <XAxis dataKey="monthLabel" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                    <Bar dataKey="total" radius={[8, 8, 0, 0]}>
+                      <LabelList
+                        dataKey="total"
+                        position="inside"
+                        angle={90}
+                        formatter={(value) => formatCurrency(Number(value))}
+                        style={{
+                          fontSize: 10,
+                          fill: resolvedTheme === "dark" ? "#111111" : "white",
+                          fontWeight: "bold",
+                        }}
+                      />
                       {monthlyBarData.map((entry, index) => (
                         <Cell
                           key={`mcell-${index}`}
-                          fill={entry.isCurrent ? "#f97316" : (resolvedTheme === "dark" ? "#ffffff" : "#111111")}
+                          fill={entry.isCurrent ? "#f97316" : resolvedTheme === "dark" ? "#ffffff" : "#111111"}
                         />
                       ))}
                     </Bar>
