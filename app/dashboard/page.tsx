@@ -580,7 +580,7 @@ export default function DashboardPage() {
 
       <button
         onClick={openForm}
-        className="fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition duration-150 ease-out hover:bg-gray-800 active:scale-95 active:shadow-none dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 dark:shadow-gray-950/50"
+        className="fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition duration-150 ease-out hover:bg-gray-800 active:scale-95 active:shadow-none dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 dark:shadow-gray-950/50 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10"
       >
         <Plus size={24} />
       </button>
