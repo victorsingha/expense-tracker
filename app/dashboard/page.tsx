@@ -2,11 +2,11 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, User, History } from "lucide-react"
+import { Plus, User, History, Sparkles } from "lucide-react"
 import { BarChart, Bar, CartesianGrid, Cell, LabelList, LineChart, Line, XAxis, ResponsiveContainer } from "recharts"
 import type { Expense } from "@/types/expense"
 import { ThemeToggle } from "@/components/theme-toggle"
-
+import { useTheme } from "@/lib/theme"
 const STORAGE_KEY = "imbroke-expenses"
 
 const CATEGORY_MAP: [RegExp, string][] = [
@@ -146,6 +146,7 @@ function getDateRange(period: Period): string[] {
 
 export default function DashboardPage() {
   const router = useRouter()
+  const { theme } = useTheme()
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [showForm, setShowForm] = useState(false)
   const [title, setTitle] = useState("")
@@ -153,6 +154,7 @@ export default function DashboardPage() {
   const [period, setPeriod] = useState<Period>("week")
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [titleDone, setTitleDone] = useState(false)
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light")
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
@@ -172,6 +174,29 @@ export default function DashboardPage() {
   )
 
   const totalExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0)
+
+  useEffect(() => {
+    const getResolvedTheme = () => {
+      if (theme === "dark") return "dark"
+      if (theme === "light") return "light"
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    }
+
+    setResolvedTheme(getResolvedTheme())
+
+    if (theme === "system") {
+      const media = window.matchMedia("(prefers-color-scheme: dark)")
+      const handleChange = () => setResolvedTheme(getResolvedTheme())
+      media.addEventListener?.("change", handleChange)
+      media.addListener?.(handleChange)
+      return () => {
+        media.removeEventListener?.("change", handleChange)
+        media.removeListener?.(handleChange)
+      }
+    }
+
+    return undefined
+  }, [theme])
 
   const allCategories = useMemo(() => {
     const set = new Set<string>()
@@ -342,7 +367,9 @@ export default function DashboardPage() {
         </div>
         {totalExpenses === 0 && (
           <div className="mt-6 rounded-3xl bg-white/0 px-2 py-4 text-center text-sm leading-6 text-gray-600 dark:text-gray-300">
-            <div className="mb-2 text-3xl">✨</div>
+            <div className="mb-2 text-orange-500 dark:text-orange-300">
+              <Sparkles size={32} className="mx-auto mb-4" />
+            </div>
             No expenses yet. Add your first spend to start tracking your budget, watch charts come alive, and take control of your money.
           </div>
         )}
@@ -362,10 +389,17 @@ export default function DashboardPage() {
                         position="inside"
                         angle={90}
                         formatter={(value) => formatCurrency(Number(value))}
-                        style={{ fontSize: 10, fill: "white", fontWeight: "bold" }}
+                        style={{
+                          fontSize: 10,
+                          fill: resolvedTheme === "dark" ? "#111111" : "white",
+                          fontWeight: "bold",
+                        }}
                       />
                       {barChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.isToday ? "#f97316" : "#111111"} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.isToday ? "#f97316" : resolvedTheme === "dark" ? "#ffffff" : "#111111"}
+                        />
                       ))}
                     </Bar>
                   </BarChart>
