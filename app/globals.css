@@ -15,7 +15,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-display);
   --font-display: var(--font-display);
   --animate-fade-in: fade-in 0.35s ease-out;
   --animate-scale-in: scale-in 0.25s ease-out;
@@ -49,8 +49,20 @@
   }
 }
 
+html {
+  font-family: var(--font-display), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: inherit;
+}
+
+button,
+input,
+textarea,
+select,
+optgroup {
+  font-family: inherit;
 }

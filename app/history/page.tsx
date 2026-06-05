@@ -84,7 +84,7 @@ export default function HistoryPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard")}
-              className="flex-shrink-0 text-gray-700 transition hover:text-gray-900 dark:text-gray-100 dark:hover:text-white"
+              className="flex-shrink-0 text-gray-700 transition duration-150 ease-out hover:text-gray-900 active:scale-95 active:opacity-80 dark:text-gray-100 dark:hover:text-white"
               aria-label="Back to dashboard"
             >
               <ArrowLeft size={20} />
@@ -100,51 +100,57 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          <div className="text-right">
-            <p className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
-              {formatCurrency(total)}
+          <div className="flex flex-col items-center justify-center text-center">
+            <p className="text-sm font-semibold tracking-wider  text-gray-500 dark:text-gray-400">
+              Total Expenses
             </p>
+
+            <h1 className="mt-2 text-5xl font-extrabold tracking-tight">
+              {formatCurrency(total)}
+            </h1>
+
           </div>
+
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pb-16">
         <ul className="divide-y divide-gray-200 dark:divide-gray-800">
-        {filteredExpenses.length === 0 ? (
-          <li className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-            {searchQuery.trim()
-              ? "No expenses match your search."
-              : "No expenses recorded."}
-          </li>
-        ) : (
-          filteredExpenses.map((expense) => (
-            <li key={expense.id} className="flex items-center justify-between gap-4 py-4">
-              <div className="min-w-0 flex-1 pr-4">
-                <p className="truncate font-medium text-gray-900 dark:text-gray-50">{expense.title}</p>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                  <span className={`px-1.5 font-semibold ${CATEGORY_COLORS[expense.category] || "text-gray-600"}`}>
-                    {expense.category}
-                  </span>
-                  <span>{formatDate(expense.date)}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <span className="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-50">
-                  -{formatCurrency(expense.amount)}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveExpense(expense.id)}
-                  className="text-xs font-semibold text-red-600 transition hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
-                >
-                  Remove
-                </button>
-              </div>
+          {filteredExpenses.length === 0 ? (
+            <li className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+              {searchQuery.trim()
+                ? "No expenses match your search."
+                : "No expenses recorded."}
             </li>
-          ))
-        )}
-      </ul>
+          ) : (
+            filteredExpenses.map((expense) => (
+              <li key={expense.id} className="flex items-center justify-between gap-4 py-4">
+                <div className="min-w-0 flex-1 pr-4">
+                  <p className="truncate font-medium text-gray-900 dark:text-gray-50">{expense.title}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <span className={`px-1.5 font-semibold ${CATEGORY_COLORS[expense.category] || "text-gray-600"}`}>
+                      {expense.category}
+                    </span>
+                    <span>{formatDate(expense.date)}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-50">
+                    -{formatCurrency(expense.amount)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveExpense(expense.id)}
+                    className="text-xs font-semibold text-red-600 transition hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))
+          )}
+        </ul>
       </div>
     </div>
   )

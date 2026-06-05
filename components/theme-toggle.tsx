@@ -19,7 +19,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={cycle}
-      className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+      className="rounded-full p-2 text-gray-400 transition duration-150 ease-out hover:bg-gray-100 hover:text-gray-600 active:scale-95 active:bg-gray-200 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-700"
       aria-label="Toggle theme"
     >
       <Icon size={18} />

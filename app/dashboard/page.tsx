@@ -122,6 +122,14 @@ const COMMON_EXPENSES = [
   "Salary", "Freelance payment",
 ]
 
+function formatLocalIsoDate(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-")
+}
+
 function getDateRange(period: Period): string[] {
   const now = new Date()
   const days: string[] = []
@@ -130,7 +138,7 @@ function getDateRange(period: Period): string[] {
     for (let i = 0; i < 7; i++) {
       const d = new Date(start)
       d.setDate(d.getDate() + i)
-      days.push(d.toISOString().slice(0, 10))
+      days.push(formatLocalIsoDate(d))
     }
   } else {
     const y = now.getFullYear()
@@ -138,7 +146,7 @@ function getDateRange(period: Period): string[] {
     const lastDay = new Date(y, m + 1, 0).getDate()
     for (let d = 1; d <= lastDay; d++) {
       const date = new Date(y, m, d)
-      days.push(date.toISOString().slice(0, 10))
+      days.push(formatLocalIsoDate(date))
     }
   }
   return days
@@ -263,12 +271,13 @@ export default function DashboardPage() {
     const numAmount = Number(amount)
     if (isNaN(numAmount) || numAmount <= 0) return
 
+    const now = new Date()
     const newExpense: Expense = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       title: title.trim(),
       amount: numAmount,
       category: categorize(title.trim()),
-      date: new Date().toISOString().slice(0, 10),
+      date: formatLocalIsoDate(now),
     }
 
     setExpenses((prev) => {
@@ -302,7 +311,7 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => router.push("/profile")}
-            className="flex items-center gap-3 text-gray-900 transition hover:text-gray-900 dark:text-gray-50"
+            className="flex items-center gap-3 text-gray-900 transition duration-150 ease-out hover:text-gray-900 active:scale-95 active:opacity-80 dark:text-gray-50"
             aria-label="Go to profile"
           >
             <User size={20} />
@@ -311,7 +320,7 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => router.push("/history")}
-            className="text-gray-700 transition hover:text-gray-900 dark:text-gray-100 dark:hover:text-white"
+            className="text-gray-700 transition duration-150 ease-out hover:text-gray-900 active:scale-95 active:opacity-80 dark:text-gray-100 dark:hover:text-white"
             aria-label="View history"
           >
             <History size={20} />
@@ -365,6 +374,8 @@ export default function DashboardPage() {
             </button>
           ))}
         </div>
+
+        
         {totalExpenses === 0 && (
           <div className="mt-6 rounded-3xl bg-white/0 px-2 py-4 text-center text-sm leading-6 text-gray-600 dark:text-gray-300">
             <div className="mb-2 text-orange-500 dark:text-orange-300">
@@ -433,7 +444,7 @@ export default function DashboardPage() {
           >
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50">Add expense</h2>
-              <button onClick={closeForm} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+              <button onClick={closeForm} className="rounded-full p-1 text-gray-400 transition duration-150 ease-out hover:bg-gray-100 hover:text-gray-600 active:scale-95 active:bg-gray-200 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-700">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
@@ -516,7 +527,7 @@ export default function DashboardPage() {
 
       <button
         onClick={openForm}
-        className="fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 dark:shadow-gray-950/50"
+        className="fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition duration-150 ease-out hover:bg-gray-800 active:scale-95 active:shadow-none dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 dark:shadow-gray-950/50"
       >
         <Plus size={24} />
       </button>
