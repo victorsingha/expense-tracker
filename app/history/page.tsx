@@ -78,7 +78,7 @@ export default function HistoryPage() {
 
   return (
     <div className="mx-auto min-h-screen max-w-lg flex flex-col">
-      <div className="sticky top-0 z-10 bg-white px-5 pb-4 pt-10 dark:bg-gray-950">
+      <div className="sticky top-0 z-10 bg-white px-5 pb-4 pt-10 dark:bg-black">
         <div className="mb-6 space-y-4">
           <div className="flex items-center gap-3">
             <button

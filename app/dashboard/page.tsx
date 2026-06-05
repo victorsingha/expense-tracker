@@ -333,7 +333,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-white dark:bg-gray-950">
+    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-white dark:bg-black">
       <div className="px-5 pt-10 pb-3">
         <div className="flex items-center justify-between gap-3 pb-4">
           <button

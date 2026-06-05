@@ -92,7 +92,7 @@ export default function ProfilePage() {
   }, [expenses])
 
   return (
-    <div className="mx-auto min-h-screen max-w-lg flex flex-col bg-white dark:bg-gray-950">
+    <div className="mx-auto min-h-screen max-w-lg flex flex-col bg-white dark:bg-black">
       <div className="px-5 pt-10 pb-8">
         <div className="mb-8 flex items-center justify-between">
           <button

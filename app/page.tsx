@@ -7,7 +7,7 @@ export default function LandingPage() {
   const router = useRouter()
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center dark:bg-gray-950">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center dark:bg-black">
       <div className="animate-fade-in flex flex-col items-center gap-8">
         <GitBranchMinus size={64} className="text-gray-900 dark:text-gray-50" />
 
