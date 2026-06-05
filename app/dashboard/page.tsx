@@ -103,7 +103,7 @@ function isThisMonth(d: Date) {
 type Period = "week" | "month"
 
 const PERIOD_LABELS: Record<Period, string> = {
-  week: "This week",
+  week: "Last 7 days",
   month: "Last 7 months",
 }
 
@@ -134,7 +134,10 @@ function getDateRange(period: Period): string[] {
   const now = new Date()
   const days: string[] = []
   if (period === "week") {
-    const { start } = getWeekRange(now)
+    // use a rolling window of the last 7 days (including today)
+    const start = new Date(now)
+    start.setDate(start.getDate() - 6)
+    start.setHours(0, 0, 0, 0)
     for (let i = 0; i < 7; i++) {
       const d = new Date(start)
       d.setDate(d.getDate() + i)
