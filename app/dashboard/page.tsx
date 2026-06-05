@@ -104,7 +104,7 @@ type Period = "week" | "month"
 
 const PERIOD_LABELS: Record<Period, string> = {
   week: "This week",
-  month: "This month",
+  month: "Last 7 months",
 }
 
 const PERIOD_FILTERS: Record<Period, (d: Date) => boolean> = {
@@ -244,6 +244,42 @@ export default function DashboardPage() {
       }
     })
   }, [filteredExpenses, period])
+
+  const monthlyBarData = useMemo(() => {
+    const now = new Date()
+    const months: { monthKey: string; monthLabel: string; total: number; isCurrent: boolean }[] = []
+    for (let i = 6; i >= 0; i--) {
+      const m = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const monthKey = `${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, "0")}`
+      const monthLabel = m.toLocaleDateString("en-US", { month: "short" })
+      const total = expenses.reduce((sum, e) => {
+        const d = parseDate(e.date)
+        return sum + ((d.getFullYear() === m.getFullYear() && d.getMonth() === m.getMonth()) ? e.amount : 0)
+      }, 0)
+      months.push({ monthKey, monthLabel, total, isCurrent: m.getFullYear() === now.getFullYear() && m.getMonth() === now.getMonth() })
+    }
+    return months
+  }, [expenses])
+
+  const renderMonthlyLabel = (props: any) => {
+    const { x, y, width, height, value } = props
+    const w = width ?? 0
+    const h = height ?? 0
+    const cx = (x ?? 0) + w / 2
+    const cy = (y ?? 0) + h / 2
+    return (
+      <text
+        x={cx}
+        y={cy}
+        transform={`rotate(-90 ${cx} ${cy})`}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{ fontSize: 10, fontWeight: 700, fill: resolvedTheme === "dark" ? "#111111" : "white" }}
+      >
+        {formatCurrency(Number(value))}
+      </text>
+    )
+  }
 
   const chartData = useMemo(() => {
     const range = getDateRange(period)
@@ -424,18 +460,25 @@ export default function DashboardPage() {
                     </Bar>
                   </BarChart>
                 ) : (
-                  <LineChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.25} />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
-                    <Line
-                      type="monotone"
-                      dataKey="total"
-                      stroke="#f97316"
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={false}
+                  <BarChart data={monthlyBarData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barCategoryGap={8}>
+                    <XAxis
+                      dataKey="monthLabel"
+                      axisLine={false}
+                      tickLine={false}
+                      interval={0}
+                      height={56}
+                      tick={{ fontSize: 11, fill: "#9ca3af" }}
                     />
-                  </LineChart>
+                    <Bar dataKey="total" radius={[8, 8, 0, 0]} barSize={32}>
+                      <LabelList dataKey="total" content={renderMonthlyLabel} />
+                      {monthlyBarData.map((entry, index) => (
+                        <Cell
+                          key={`mcell-${index}`}
+                          fill={entry.isCurrent ? "#f97316" : (resolvedTheme === "dark" ? "#ffffff" : "#111111")}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 )}
               </ResponsiveContainer>
             </div>
