@@ -79,38 +79,32 @@ export default function HistoryPage() {
   return (
     <div className="mx-auto min-h-screen max-w-lg flex flex-col">
       <div className="sticky top-0 z-10 bg-white px-5 pb-4 pt-10 dark:bg-gray-950">
-        <div className="mb-6 flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard")}
-            className="text-gray-700 transition hover:text-gray-900 dark:text-gray-100 dark:hover:text-white"
-            aria-label="Back to dashboard"
-          >
-            <ArrowLeft size={20} />
-          </button>
-        </div>
+        <div className="mb-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard")}
+              className="flex-shrink-0 text-gray-700 transition hover:text-gray-900 dark:text-gray-100 dark:hover:text-white"
+              aria-label="Back to dashboard"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="relative flex-1">
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search by title, category, or date"
+                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-orange-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:border-gray-500 dark:focus:ring-orange-500/20"
+              />
+            </div>
+          </div>
 
-        <div className="space-y-3">
-       
-
-          <div className="text-center">
-            <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+          <div className="text-right">
+            <p className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
               {formatCurrency(total)}
             </p>
           </div>
-        </div>
-
-        <div className="relative">
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search by title, category, or date"
-              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-orange-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:border-gray-500 dark:focus:ring-orange-500/20"
-            />
-          </div>
-
         </div>
       </div>
 

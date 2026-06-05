@@ -340,49 +340,56 @@ export default function DashboardPage() {
             </button>
           ))}
         </div>
+        {totalExpenses === 0 && (
+          <div className="mt-6 rounded-3xl bg-white/0 px-2 py-4 text-center text-sm leading-6 text-gray-600 dark:text-gray-300">
+            <div className="mb-2 text-3xl">✨</div>
+            No expenses yet. Add your first spend to start tracking your budget, watch charts come alive, and take control of your money.
+          </div>
+        )}
+        {totalExpenses > 0 && (
+          <div className="mt-4 rounded-xl bg-gray-50 px-4 pb-3 pt-5 dark:bg-gray-900">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Daily totals</p>
+            </div>
+            <div className="pointer-events-none">
+              <ResponsiveContainer width="100%" height={280}>
+                {period === "week" ? (
+                  <BarChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barCategoryGap={6}>
+                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                    <Bar dataKey="total" radius={[8, 8, 0, 0]}>
+                      <LabelList
+                        dataKey="total"
+                        position="inside"
+                        angle={90}
+                        formatter={(value) => formatCurrency(Number(value))}
+                        style={{ fontSize: 10, fill: "white", fontWeight: "bold" }}
+                      />
+                      {barChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.isToday ? "#f97316" : "#111111"} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                ) : (
+                  <LineChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.25} />
+                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
+                    <Line
+                      type="monotone"
+                      dataKey="total"
+                      stroke="#f97316"
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                      activeDot={false}
+                    />
+                  </LineChart>
+                )}
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="mx-5 mt-4 rounded-xl bg-gray-50 px-4 pb-3 pt-5 dark:bg-gray-900">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Daily totals</p>
-        </div>
-        <div className="pointer-events-none">
-          <ResponsiveContainer width="100%" height={280}>
-            {period === "week" ? (
-              <BarChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barCategoryGap={6}>
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
-                <Bar dataKey="total" radius={[8, 8, 0, 0]}>
-                  <LabelList
-                    dataKey="total"
-                    position="inside"
-                    angle={90}
-                    formatter={(value) => formatCurrency(Number(value))}
-                    style={{ fontSize: 10, fill: "white", fontWeight: "bold" }}
-                  />
-                  {barChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.isToday ? "#f97316" : "#111111"} />
-                  ))}
-                </Bar>
-              </BarChart>
-            ) : (
-              <LineChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.25} />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
-                <Line
-                  type="monotone"
-                  dataKey="total"
-                  stroke="#f97316"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                  activeDot={false}
-                />
-              </LineChart>
-            )}
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="flex-1 px-5 pb-28" />
+      <div className="flex-1 pb-28" />
 
       {showForm && (
         <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/30 sm:items-center" onClick={closeForm}>
