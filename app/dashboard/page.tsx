@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect, useCallback } from "react"
+import { useState, useMemo, useEffect, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, User, History, Sparkles } from "lucide-react"
 import { BarChart, Bar, CartesianGrid, Cell, LabelList, LineChart, Line, XAxis, ResponsiveContainer } from "recharts"
@@ -159,6 +159,8 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false)
   const [title, setTitle] = useState("")
   const [amount, setAmount] = useState("")
+  const [selectedDate, setSelectedDate] = useState(formatLocalIsoDate(new Date()))
+  const amountInputRef = useRef<HTMLInputElement | null>(null)
   const [period, setPeriod] = useState<Period>("week")
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [titleDone, setTitleDone] = useState(false)
@@ -182,6 +184,12 @@ export default function DashboardPage() {
   )
 
   const totalExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0)
+
+  useEffect(() => {
+    if (titleDone) {
+      amountInputRef.current?.focus()
+    }
+  }, [titleDone])
 
   useEffect(() => {
     const getResolvedTheme = () => {
@@ -271,13 +279,12 @@ export default function DashboardPage() {
     const numAmount = Number(amount)
     if (isNaN(numAmount) || numAmount <= 0) return
 
-    const now = new Date()
     const newExpense: Expense = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       title: title.trim(),
       amount: numAmount,
       category: categorize(title.trim()),
-      date: formatLocalIsoDate(now),
+      date: selectedDate,
     }
 
     setExpenses((prev) => {
@@ -288,11 +295,12 @@ export default function DashboardPage() {
     setTitle("")
     setAmount("")
     setShowForm(false)
-  }, [title, amount])
+  }, [title, amount, selectedDate])
 
   function openForm() {
     setTitle("")
     setAmount("")
+    setSelectedDate(formatLocalIsoDate(new Date()))
     setTitleDone(false)
     setShowForm(true)
   }
@@ -301,6 +309,7 @@ export default function DashboardPage() {
     setShowForm(false)
     setTitle("")
     setAmount("")
+    setSelectedDate(formatLocalIsoDate(new Date()))
     setTitleDone(false)
   }
 
@@ -375,7 +384,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        
+
         {totalExpenses === 0 && (
           <div className="mt-6 rounded-3xl bg-white/0 px-2 py-4 text-center text-sm leading-6 text-gray-600 dark:text-gray-300">
             <div className="mb-2 text-orange-500 dark:text-orange-300">
@@ -491,23 +500,38 @@ export default function DashboardPage() {
               </div>
 
               {titleDone && (
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-gray-400 dark:text-gray-500">₹</span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    pattern="^[0-9]*\.?[0-9]*$"
-                    placeholder="0"
-                    value={amount}
-                    onChange={(e) => {
-                      const next = e.target.value
-                      if (next === "" || /^[0-9]*\.?[0-9]*$/.test(next)) {
-                        setAmount(next)
-                      }
-                    }}
-                    className="w-full rounded-2xl border border-gray-200 px-5 py-4 pl-10 text-3xl font-semibold text-gray-900 outline-none transition focus:border-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
-                    autoFocus
-                  />
+                <div className="mt-1 flex flex-row flex-wrap gap-3">
+                  <div className="flex-1 min-w-[45%]">
+                    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="w-full rounded-2xl border border-gray-200 px-5 py-4 text-lg font-medium text-gray-900 outline-none transition focus:border-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-500"
+                      style={{ appearance: "none" }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-[45%]">
+                    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-gray-400 dark:text-gray-500">₹</span>
+                      <input
+                        ref={amountInputRef}
+                        type="text"
+                        inputMode="decimal"
+                        pattern="^[0-9]*\.?[0-9]*$"
+                        placeholder="0"
+                        value={amount}
+                        onChange={(e) => {
+                          const next = e.target.value
+                          if (next === "" || /^[0-9]*\.?[0-9]*$/.test(next)) {
+                            setAmount(next)
+                          }
+                        }}
+                        className="w-full rounded-2xl border border-gray-200 px-5 py-4 pl-10 text-lg font-medium text-gray-900 outline-none transition focus:border-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -515,7 +539,7 @@ export default function DashboardPage() {
                 <button
                   onClick={handleAdd}
                   disabled={!amount.trim() || Number(amount) <= 0}
-                  className="w-full rounded-2xl bg-gray-900 py-4 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-40 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                  className="mt-4 w-full rounded-2xl bg-gray-900 py-4 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-40 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                 >
                   Add expense
                 </button>

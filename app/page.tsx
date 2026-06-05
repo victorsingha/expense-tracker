@@ -23,7 +23,7 @@ export default function LandingPage() {
 
         <button
           onClick={() => router.push("/dashboard")}
-          className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-gray-700 active:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+          className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-8 py-4 text-base font-semibold text-white transition duration-200 ease-out hover:bg-gray-700 active:scale-105 active:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-offset-gray-950"
         >
           where is my money?
           <ArrowRight size={16} strokeWidth={2.5} />
